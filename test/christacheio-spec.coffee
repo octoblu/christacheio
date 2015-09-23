@@ -29,7 +29,7 @@ describe 'christacheio', ->
   describe 'when called with custom tags', ->
     beforeEach ->
       tags = ['<','>']
-      @result = christacheio '<nut>', {nut: 'walnut'}, tags
+      @result = christacheio '<nut>', {nut: 'walnut'}, tags: tags
 
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'walnut'

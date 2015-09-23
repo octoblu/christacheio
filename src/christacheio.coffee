@@ -11,7 +11,8 @@ regexMatches = (regexString, string) ->
     matches.push match[1]
   return matches;
 
-christacheio = (jsonString, obj, tags, transformation) ->
+christacheio = (jsonString, obj, options={}) ->
+  {tags,transformation} = options
   tags ?= ['{{', '}}']
   transformation ?= (data) -> data
   regexStr = "#{tags[0]}(.*?)#{tags[1]}"
