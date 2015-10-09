@@ -19,12 +19,19 @@ describe 'christacheio', ->
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'null'
 
-  describe 'when called with a repetitive string and an object', ->
+  describe 'when called with a repetitive string and a delimiter and an object', ->
     beforeEach ->
       @result = christacheio '{{nut}}:{{nut}}', nut: 'pistachio'
 
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'pistachio:pistachio'
+
+  describe 'when called with a repetitive string and an object', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}{{nut}}', nut: 'pistachio'
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal 'pistachiopistachio'
 
   describe 'when called with an string that references an unknown key', ->
     beforeEach ->
@@ -42,11 +49,29 @@ describe 'christacheio', ->
 
   describe 'when called with two passes, like the engine', ->
     beforeEach ->
-      firstPass = christacheio '{{nut}}:{{nut}}', {}, {tags: ['"{{', '}}"'], transformation: JSON.stringify}
+      sampleObject =
+        blargh: '{{nut}}'
+
+      template = JSON.stringify sampleObject
+
+      firstPass = christacheio template, nut: 'pistachio', {tags: ['"{{', '}}"'], transformation: JSON.stringify}
       @result = christacheio firstPass, nut: 'pistachio'
 
     it 'should replace the mustached area', ->
-      expect(@result).to.deep.equal 'pistachio:pistachio'
+      expect(@result).to.deep.equal '{"blargh":"pistachio"}'
+
+  describe 'when called with two passes, with multiple tags like the engine', ->
+    beforeEach ->
+      sampleObject =
+        blargh: '{{nut}}{{nut}}'
+
+      template = JSON.stringify sampleObject
+
+      firstPass = christacheio template, nut: 'pistachio', {tags: ['"{{', '}}"'], transformation: JSON.stringify}
+      @result = christacheio firstPass, nut: 'pistachio'
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal '{"blargh":"pistachiopistachio"}'
 
   describe 'when called with a embedded repetitive string and an object', ->
     beforeEach ->

@@ -11,11 +11,12 @@ regexMatches = (regexString, string) ->
   return matches;
 
 christacheio = (jsonString, obj, options={}) ->
-  {tags,transformation} = options
+  {tags,transformation,negationCharacters} = options
   tags ?= ['{{', '}}']
+  negationCharacters ?= '}}'
   transformation ?= (data) -> data
   [startTag, endTag] = tags
-  regexStr = "#{startTag}(.*?)#{endTag}"
+  regexStr = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
   transformedMatches = {}
 
   newJsonString = _.clone jsonString
