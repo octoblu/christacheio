@@ -15,7 +15,7 @@ christacheio = (jsonString, obj, options={}) ->
   tags ?= ['{{', '}}']
   transformation ?= (data) -> data
   [startTag, endTag] = tags
-  regexStr = "#{startTag}(.*?)#{endTag}"
+  regexStr = "#{startTag}(.+?)#{endTag}"
   map = {}
 
   newJsonString = _.clone jsonString
@@ -25,7 +25,7 @@ christacheio = (jsonString, obj, options={}) ->
 
   _.each map, (value, key) ->
     escapedKey = escapeStringRegexp key
-    regex = new RegExp startTag + escapedKey + endTag, 'g'
+    regex = new RegExp "#{startTag}#{escapedKey}#{endTag}", 'g'
     newJsonString = newJsonString.replace regex, map[key]
 
   return newJsonString

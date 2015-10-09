@@ -19,6 +19,21 @@ describe 'christacheio', ->
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'pistachio:pistachio'
 
+  describe 'when called with custom tags', ->
+    beforeEach ->
+      @result = christacheio '"<<nut>>"', nut: 'pistachio', {tags: ['"<<', '>>"']}
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal 'pistachio'
+
+  describe 'when called with two passes, like the engine', ->
+    beforeEach ->
+      firstPass = christacheio '{{nut}}:{{nut}}', nut: 'pistachio', {tags: ['"{{', '}}"'], transformation: JSON.stringify}
+      @result = christacheio firstPass, nut: 'pistachio'
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal 'pistachio:pistachio'
+
   describe 'when called with a embedded repetitive string and an object', ->
     beforeEach ->
       @result = christacheio 'f{{nut}}:{{nut}}z', nut: 'pistachio'
