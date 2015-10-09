@@ -19,6 +19,13 @@ describe 'christacheio', ->
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'pistachio:pistachio'
 
+  describe 'when called with a embedded repetitive string and an object', ->
+    beforeEach ->
+      @result = christacheio 'f{{nut}}:{{nut}}z', nut: 'pistachio'
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal 'fpistachio:pistachioz'
+
   describe 'when called with string and a nested object', ->
     beforeEach ->
       @result = christacheio '{{legume.nut}}', legume: {nut: 'almond'}
