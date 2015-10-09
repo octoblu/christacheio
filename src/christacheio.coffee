@@ -15,7 +15,7 @@ christacheio = (jsonString, obj, options={}) ->
   tags ?= ['{{', '}}']
   transformation ?= (data) -> data
   [startTag, endTag] = tags
-  regexStr = "#{startTag}(.+?)#{endTag}"
+  regexStr = "#{startTag}(.*?)#{endTag}"
   transformedMatches = {}
 
   newJsonString = _.clone jsonString
@@ -23,6 +23,7 @@ christacheio = (jsonString, obj, options={}) ->
   _.each regexMatches(regexStr, jsonString), (key) ->
     value = _.get obj, key
     transformedMatches[key] = transformation(value) if value?
+    transformedMatches[key] ?= null # you need this
 
   _.each transformedMatches, (value, key) ->
     escapedKey = escapeStringRegexp key
