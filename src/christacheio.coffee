@@ -16,17 +16,18 @@ christacheio = (jsonString, obj, options={}) ->
   transformation ?= (data) -> data
   [startTag, endTag] = tags
   regexStr = "#{startTag}(.+?)#{endTag}"
-  map = {}
+  transformedMatches = {}
 
   newJsonString = _.clone jsonString
 
   _.each regexMatches(regexStr, jsonString), (key) ->
-    map[key] = transformation _.get(obj, key)
+    value = _.get obj, key
+    transformedMatches[key] = transformation(value) if value?
 
-  _.each map, (value, key) ->
+  _.each transformedMatches, (value, key) ->
     escapedKey = escapeStringRegexp key
     regex = new RegExp "#{startTag}#{escapedKey}#{endTag}", 'g'
-    newJsonString = newJsonString.replace regex, map[key]
+    newJsonString = newJsonString.replace regex, transformedMatches[key]
 
   return newJsonString
 
