@@ -42,8 +42,11 @@ stacheception = (stache, obj, options, limbo=[]) ->
   limbo.push stache
   _.forOwn stache, (value, key) ->
     return if _.includes limbo, value
-    return stache[key] = stacheception value, obj, options, limbo if _.isObject value
+    if _.isObject value
+      stache[key] = stacheception value, obj, options, limbo
+      return
     stache[key] = stachest value, obj, options
+    return
 
 christacheio = (stache, obj, options) ->
   return stachest stache, obj, options if ! _.isObject stache
