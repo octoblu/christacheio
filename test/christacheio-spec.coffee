@@ -94,3 +94,24 @@ describe 'christacheio', ->
 
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'walnut'
+
+  describe 'when called with a christacheio as the entire string and an object value', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}', nut: favorite: 'pecan'
+
+    it 'should return an object instead of a string', ->
+      expect(@result).to.deep.equal favorite: 'pecan'
+
+  describe 'when called with a string containing an object value and no transformation', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}...?', nut: favorite: 'pecan'
+
+    it 'should replace the mustached area with [object Object]', ->
+      expect(@result).to.deep.equal '[object Object]...?'
+
+  describe 'when called with a string containing an object key and a transformation', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}...?', {nut: favorite: 'pecan'}, {transformation: JSON.stringify}
+
+    it 'should replace the mustached area with JSON stringified version of the object', ->
+      expect(@result).to.deep.equal '{"favorite":"pecan"}...?'
