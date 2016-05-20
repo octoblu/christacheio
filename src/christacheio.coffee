@@ -45,8 +45,7 @@ stacheception = (stache, obj, options, limbo=[]) ->
     stache[key] = stachest value, obj, options
 
 christacheio = (stache, obj, options) ->
-  return stachest stache, obj, options if _.isString stache
-  return stache if ! _.isObject stache
+  return stachest stache, obj, options if ! _.isObject stache
   return stacheception stache, obj, options
 
 module.exports = christacheio
