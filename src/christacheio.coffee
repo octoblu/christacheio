@@ -10,27 +10,29 @@ regexMatches = (regexString, string) ->
     matches.push match[1]
   return matches;
 
-christacheio = (jsonString, obj, options={}) ->
+christacheio = (stacheString, obj, options={}) ->
   {tags,transformation,negationCharacters} = options
   tags ?= ['{{', '}}']
-  negationCharacters ?= '}}'
+  negationCharacters ?= '}{'
   transformation ?= (data) -> data
   [startTag, endTag] = tags
   regexStr = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
   transformedMatches = {}
 
-  newJsonString = _.clone jsonString
+  newStacheString = _.clone stacheString
 
-  _.each regexMatches(regexStr, jsonString), (key) ->
+  _.each regexMatches(regexStr, stacheString), (key) ->
     value = _.get obj, key
     transformedMatches[key] = transformation(value) if value?
     transformedMatches[key] ?= null # you need this
 
   _.each transformedMatches, (value, key) ->
     escapedKey = escapeStringRegexp key
-    regex = new RegExp "#{startTag}#{escapedKey}#{endTag}", 'g'
-    newJsonString = newJsonString.replace regex, transformedMatches[key]
+    tag = "#{startTag}#{escapedKey}#{endTag}"
+    return newStacheString = value if tag == stacheString and value?
+    regex = new RegExp(tag, 'g')
+    newStacheString = newStacheString.replace regex, value
 
-  return newJsonString
+  return newStacheString
 
 module.exports = christacheio
