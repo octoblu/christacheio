@@ -115,3 +115,34 @@ describe 'christacheio', ->
 
     it 'should replace the mustached area with JSON stringified version of the object', ->
       expect(@result).to.deep.equal '{"favorite":"pecan"}...?'
+
+  describe 'when called with a number instead of a string', ->
+    beforeEach ->
+      @result = christacheio 1337, nut: 'wall'
+
+    it 'should return the number', ->
+      expect(@result).to.deep.equal 1337
+
+  describe 'when called with an object to be christacheiod', ->
+    beforeEach ->
+      @result = christacheio {hello:'{{nut}}',world:'earth',winner:true}, {nut: 'wall'}
+
+    it 'should replace the mustached keys', ->
+      expect(@result).to.deep.equal {hello:'wall',world:'earth',winner:true}
+
+  describe 'when called with a deep object to be christacheiod', ->
+    beforeEach ->
+      @result = christacheio {outer:planet:'{{nut}}'}, {nut: 'macadamia'}
+
+    it 'should replace the mustached keys', ->
+      expect(@result).to.deep.equal {outer:planet:'macadamia'}
+
+  describe 'when called with a circular object to be christacheiod', ->
+    beforeEach ->
+      fixme = {outer:planet:'{{nut}}'}
+      fixme.looped = fixme
+      @result = christacheio fixme, {nut: 'macadamia'}
+
+    it 'should replace the mustached keys', ->
+      expect(@result.outer.planet).to.deep.equal 'macadamia'
+      expect(@result.looped.looped.looped.outer.planet).to.deep.equal 'macadamia'
