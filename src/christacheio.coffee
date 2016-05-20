@@ -26,13 +26,17 @@ stachest = (stacheString, obj, options={}, depth=1) ->
     value = _.get obj, key
     transformedMatches[key] = transformation(value) if value?
     transformedMatches[key] ?= null # you need this
+    return
 
   _.each transformedMatches, (value, key) ->
     key = "#{startTag}#{key}#{endTag}"
-    return newStache = value if key == stacheString
+    if key == stacheString
+      newStache = value
+      return
     escapedKey = escape key
     regex = new RegExp(escapedKey, 'g')
     newStache = newStache.replace regex, value
+    return
 
   stachemore = depth < options.recurseDepth and newStache != stacheString
   return stachest newStache, obj, options, depth+1 if stachemore
