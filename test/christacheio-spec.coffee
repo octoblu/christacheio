@@ -139,10 +139,10 @@ describe 'christacheio', ->
 
   describe 'when called with a circular object to be christacheiod', ->
     beforeEach ->
-      fixme = {outer:planet:'{{nut}}'}
-      fixme.looped = fixme
-      @result = christacheio fixme, {nut: 'macadamia'}
+      circular = {outer:planet:'{{nut}}'}
+      circular.circular = circular
+      @result = christacheio circular, {nut: 'macadamia'}
 
     it 'should replace the mustached keys', ->
       expect(@result.outer.planet).to.deep.equal 'macadamia'
-      expect(@result.looped.looped.looped.outer.planet).to.deep.equal 'macadamia'
+      expect(@result.circular.circular.circular.outer.planet).to.deep.equal 'macadamia'
