@@ -146,3 +146,24 @@ describe 'christacheio', ->
     it 'should not stack overflow and replace the deepest mustached area', ->
       expect(@result.outer.planet).to.deep.equal 'macadamia'
       expect(@result.circular.circular.circular.outer.planet).to.deep.equal 'macadamia'
+
+  describe 'when called with a string and an object and recurseDepth not set', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}', {nut: '{{chocolate}}', chocolate: '{{covered}}', covered: 'peanut'}
+
+    it 'should replace the mustached area with another mustache label', ->
+      expect(@result).to.deep.equal '{{chocolate}}'
+
+  describe 'when called with a string and an object and recurseDepth of 2', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}', {nut: '{{chocolate}}', chocolate: '{{covered}}', covered: 'peanut'}, {recurseDepth:2}
+
+    it 'should recursively replace the mustached area', ->
+      expect(@result).to.deep.equal '{{covered}}'
+
+  describe 'when called with a string and an object and recurseDepth of 9000', ->
+    beforeEach ->
+      @result = christacheio '{{nut}}', {nut: '{{chocolate}}', chocolate: '{{covered}}', covered: 'peanut'}, {recurseDepth:9000}
+
+    it 'should recursively replace the mustached area to completion', ->
+      expect(@result).to.deep.equal 'peanut'

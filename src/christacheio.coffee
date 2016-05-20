@@ -10,7 +10,7 @@ regexMatches = (regexString, string) ->
     matches.push match[1]
   return matches;
 
-stachest = (stacheString, obj, options={}) ->
+stachest = (stacheString, obj, options={}, depth=1) ->
   return stacheString if ! _.isString stacheString
 
   {tags,transformation,negationCharacters} = options
@@ -34,6 +34,9 @@ stachest = (stacheString, obj, options={}) ->
     return newStache = value if tag == stacheString and value?
     regex = new RegExp(tag, 'g')
     newStache = newStache.replace regex, value
+
+  stachemore = depth < options.recurseDepth and newStache != stacheString
+  return stachest newStache, obj, options, depth+1 if stachemore
 
   return newStache
 
