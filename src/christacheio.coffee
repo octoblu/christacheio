@@ -2,9 +2,8 @@ _                  = require 'lodash'
 debug              = require('debug')('christacheio')
 escapeStringRegexp = require 'escape-string-regexp'
 
-regexMatches = (regexString, string) ->
-  regex = new RegExp regexString, 'g'
-
+stachematch = (stacheExp, string) ->
+  regex = new RegExp stacheExp, 'g'
   matches = []
   while match = regex.exec string
     matches.push match[1]
@@ -18,12 +17,11 @@ stachest = (stacheString, obj, options={}, depth=1) ->
   negationCharacters ?= '}{'
   transformation ?= (data) -> data
   [startTag, endTag] = tags
-  regexStr = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
+  stacheExp = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
   transformedMatches = {}
-
   newStache = _.clone stacheString
 
-  _.each regexMatches(regexStr, stacheString), (key) ->
+  _.each stachematch(stacheExp, stacheString), (key) ->
     value = _.get obj, key
     transformedMatches[key] = transformation(value) if value?
     transformedMatches[key] ?= null # you need this
@@ -32,12 +30,11 @@ stachest = (stacheString, obj, options={}, depth=1) ->
     escapedKey = escapeStringRegexp key
     tag = "#{startTag}#{escapedKey}#{endTag}"
     return newStache = value if tag == stacheString and value?
-    regex = new RegExp(tag, 'g')
-    newStache = newStache.replace regex, value
+    stachex = new RegExp(tag, 'g')
+    newStache = newStache.replace stachex, value
 
   stachemore = depth < options.recurseDepth and newStache != stacheString
   return stachest newStache, obj, options, depth+1 if stachemore
-
   return newStache
 
 stacheception = (stache, obj, options, limbo=[]) ->

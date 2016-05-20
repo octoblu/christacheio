@@ -167,3 +167,10 @@ describe 'christacheio', ->
 
     it 'should recursively replace the mustached area to completion', ->
       expect(@result).to.deep.equal 'peanut'
+
+  describe 'when called with an array or christacheios', ->
+    beforeEach ->
+      @result = christacheio ['{{nut}}','{{nutella}}'], {nut: 'cracker', nutella: 'hazel'}
+
+    it 'should replace elements of the mustached array', ->
+      expect(@result).to.deep.equal ['cracker','hazel']
