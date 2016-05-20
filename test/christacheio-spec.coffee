@@ -168,9 +168,18 @@ describe 'christacheio', ->
     it 'should recursively replace the mustached area to completion', ->
       expect(@result).to.deep.equal 'peanut'
 
-  describe 'when called with an array or christacheios', ->
+  describe 'when called with an array of christacheios', ->
     beforeEach ->
       @result = christacheio ['{{nut}}','{{nutella}}'], {nut: 'cracker', nutella: 'hazel'}
 
     it 'should replace elements of the mustached array', ->
       expect(@result).to.deep.equal ['cracker','hazel']
+
+  describe 'when called with a complex object with array of recursive christacheios', ->
+    beforeEach ->
+      @result = christacheio {large:tin:['{{nut}}','{{nutella}}']},
+        {nut: '{{cracker}}', nutella: '{{hazel}}', cracker: 'ballet', hazel:'spread'},
+        {recurseDepth:2}
+
+    it 'should recurse and replace elements of the mustached array', ->
+      expect(@result).to.deep.equal large:tin:['ballet','spread']

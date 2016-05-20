@@ -2,12 +2,12 @@ _                  = require 'lodash'
 debug              = require('debug')('christacheio')
 escapeStringRegexp = require 'escape-string-regexp'
 
-stachematch = (stacheExp, string) ->
+stacheMatch = (stacheExp, stacheString) ->
   regex = new RegExp stacheExp, 'g'
   matches = []
-  while match = regex.exec string
+  while match = regex.exec stacheString
     matches.push match[1]
-  return matches;
+  return matches
 
 stachest = (stacheString, obj, options={}, depth=1) ->
   return stacheString if ! _.isString stacheString
@@ -21,7 +21,7 @@ stachest = (stacheString, obj, options={}, depth=1) ->
   transformedMatches = {}
   newStache = _.clone stacheString
 
-  _.each stachematch(stacheExp, stacheString), (key) ->
+  _.each stacheMatch(stacheExp, stacheString), (key) ->
     value = _.get obj, key
     transformedMatches[key] = transformation(value) if value?
     transformedMatches[key] ?= null # you need this
@@ -30,8 +30,8 @@ stachest = (stacheString, obj, options={}, depth=1) ->
     escapedKey = escapeStringRegexp key
     tag = "#{startTag}#{escapedKey}#{endTag}"
     return newStache = value if tag == stacheString and value?
-    stachex = new RegExp(tag, 'g')
-    newStache = newStache.replace stachex, value
+    regex = new RegExp(tag, 'g')
+    newStache = newStache.replace regex, value
 
   stachemore = depth < options.recurseDepth and newStache != stacheString
   return stachest newStache, obj, options, depth+1 if stachemore
