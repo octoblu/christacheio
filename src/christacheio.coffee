@@ -27,10 +27,11 @@ stachest = (stacheString, obj, options={}, depth=1) ->
     transformedMatches[key] ?= null # you need this
 
   _.each transformedMatches, (value, key) ->
+    key = "#{startTag}#{key}#{endTag}"
+    return newStache = value if key == stacheString
     escapedKey = escapeStringRegexp key
-    tag = "#{startTag}#{escapedKey}#{endTag}"
-    return newStache = value if tag == stacheString and value?
-    regex = new RegExp(tag, 'g')
+    debug "key: #{key}, stacheString: #{stacheString}"
+    regex = new RegExp(escapedKey, 'g')
     newStache = newStache.replace regex, value
 
   stachemore = depth < options.recurseDepth and newStache != stacheString
@@ -43,6 +44,7 @@ stacheception = (stache, obj, options, limbo=[]) ->
     return if _.includes limbo, value
     return stache[key] = stacheception value, obj, options, limbo if _.isObject value
     stache[key] = stachest value, obj, options
+    debug "#{JSON.stringify obj} : #{JSON.stringify value} -> #{JSON.stringify stache[key]}" if value != stache[key]
 
 christacheio = (stache, obj, options) ->
   return stachest stache, obj, options if ! _.isObject stache

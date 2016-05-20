@@ -17,7 +17,7 @@ describe 'christacheio', ->
       @result = christacheio '{{}}', nut: 'pistachio'
 
     it 'should replace the mustached area', ->
-      expect(@result).to.deep.equal 'null'
+      expect(@result).to.deep.equal null
 
   describe 'when called with a repetitive string and a delimiter and an object', ->
     beforeEach ->
@@ -38,7 +38,7 @@ describe 'christacheio', ->
       @result = christacheio '{{nut}}', {}
 
     it 'should replace the mustached area with a null', ->
-      expect(@result).to.deep.equal 'null'
+      expect(@result).to.deep.equal null
 
   describe 'when called with custom tags', ->
     beforeEach ->
