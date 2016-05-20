@@ -1,6 +1,6 @@
-_                  = require 'lodash'
-debug              = require('debug')('christacheio')
-escapeStringRegexp = require 'escape-string-regexp'
+_      = require 'lodash'
+debug  = require('debug')('christacheio')
+escape = require 'escape-string-regexp'
 
 stacheMatch = (stacheExp, stacheString) ->
   regex = new RegExp stacheExp, 'g'
@@ -14,10 +14,11 @@ stachest = (stacheString, obj, options={}, depth=1) ->
 
   {tags,transformation,negationCharacters} = options
   tags ?= ['{{', '}}']
-  negationCharacters ?= '}{'
+
+  negationCharacters ?= _.uniq(tags.join '').join ''
   transformation ?= (data) -> data
   [startTag, endTag] = tags
-  stacheExp = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
+  stacheExp = "#{escape startTag}([^#{escape negationCharacters}]*?)#{escape endTag}"
   transformedMatches = {}
   newStache = _.clone stacheString
 
@@ -29,8 +30,7 @@ stachest = (stacheString, obj, options={}, depth=1) ->
   _.each transformedMatches, (value, key) ->
     key = "#{startTag}#{key}#{endTag}"
     return newStache = value if key == stacheString
-    escapedKey = escapeStringRegexp key
-    debug "key: #{key}, stacheString: #{stacheString}"
+    escapedKey = escape key
     regex = new RegExp(escapedKey, 'g')
     newStache = newStache.replace regex, value
 
@@ -44,7 +44,6 @@ stacheception = (stache, obj, options, limbo=[]) ->
     return if _.includes limbo, value
     return stache[key] = stacheception value, obj, options, limbo if _.isObject value
     stache[key] = stachest value, obj, options
-    debug "#{JSON.stringify obj} : #{JSON.stringify value} -> #{JSON.stringify stache[key]}" if value != stache[key]
 
 christacheio = (stache, obj, options) ->
   return stachest stache, obj, options if ! _.isObject stache

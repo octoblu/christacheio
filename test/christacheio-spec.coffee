@@ -183,3 +183,19 @@ describe 'christacheio', ->
 
     it 'should recurse and replace elements of the mustached array', ->
       expect(@result).to.deep.equal large:tin:['ballet','spread']
+
+  describe 'when called with a string and an object and [] as the tag key', ->
+    beforeEach ->
+      @result = christacheio '[nut]', nut: 'pistachio', {tags: ['[', ']']}
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal 'pistachio'
+
+  describe 'when called with a complex object with array of recursive christacheios and [] as the tag key', ->
+    beforeEach ->
+      @result = christacheio {large:tin:['[nut]','[nutella]']},
+        {nut: '[cracker]', nutella: '[hazel]', cracker: 'ballet', hazel:'spread'},
+        {tags: ['[', ']'], recurseDepth:2}
+
+    it 'should recurse and replace elements of the mustached array', ->
+      expect(@result).to.deep.equal large:tin:['ballet','spread']
