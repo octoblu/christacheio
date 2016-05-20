@@ -127,14 +127,14 @@ describe 'christacheio', ->
     beforeEach ->
       @result = christacheio {hello:'{{nut}}',world:'earth',winner:true}, {nut: 'wall'}
 
-    it 'should replace the mustached keys', ->
+    it 'should replace the mustached area', ->
       expect(@result).to.deep.equal {hello:'wall',world:'earth',winner:true}
 
   describe 'when called with a deep object to be christacheiod', ->
     beforeEach ->
       @result = christacheio {outer:planet:'{{nut}}'}, {nut: 'macadamia'}
 
-    it 'should replace the mustached keys', ->
+    it 'should replace the deep mustached area', ->
       expect(@result).to.deep.equal {outer:planet:'macadamia'}
 
   describe 'when called with a circular object to be christacheiod', ->
@@ -143,6 +143,6 @@ describe 'christacheio', ->
       circular.circular = circular
       @result = christacheio circular, {nut: 'macadamia'}
 
-    it 'should replace the mustached keys', ->
+    it 'should not stack overflow and replace the deepest mustached area', ->
       expect(@result.outer.planet).to.deep.equal 'macadamia'
       expect(@result.circular.circular.circular.outer.planet).to.deep.equal 'macadamia'

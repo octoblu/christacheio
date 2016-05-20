@@ -10,46 +10,43 @@ regexMatches = (regexString, string) ->
     matches.push match[1]
   return matches;
 
-christacheio = (stache, obj, options={}) ->
+stachest = (stacheString, obj, options={}) ->
+  return stacheString if ! _.isString stacheString
 
-  stachest = (stacheString) ->
-    return stacheString if ! _.isString stacheString
+  {tags,transformation,negationCharacters} = options
+  tags ?= ['{{', '}}']
+  negationCharacters ?= '}{'
+  transformation ?= (data) -> data
+  [startTag, endTag] = tags
+  regexStr = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
+  transformedMatches = {}
 
-    {tags,transformation,negationCharacters} = options
-    tags ?= ['{{', '}}']
-    negationCharacters ?= '}{'
-    transformation ?= (data) -> data
-    [startTag, endTag] = tags
-    regexStr = "#{startTag}([^#{negationCharacters}]*?)#{endTag}"
-    transformedMatches = {}
+  newStache = _.clone stacheString
 
-    newStacheString = _.clone stacheString
+  _.each regexMatches(regexStr, stacheString), (key) ->
+    value = _.get obj, key
+    transformedMatches[key] = transformation(value) if value?
+    transformedMatches[key] ?= null # you need this
 
-    _.each regexMatches(regexStr, stacheString), (key) ->
-      value = _.get obj, key
-      transformedMatches[key] = transformation(value) if value?
-      transformedMatches[key] ?= null # you need this
+  _.each transformedMatches, (value, key) ->
+    escapedKey = escapeStringRegexp key
+    tag = "#{startTag}#{escapedKey}#{endTag}"
+    return newStache = value if tag == stacheString and value?
+    regex = new RegExp(tag, 'g')
+    newStache = newStache.replace regex, value
 
-    _.each transformedMatches, (value, key) ->
-      escapedKey = escapeStringRegexp key
-      tag = "#{startTag}#{escapedKey}#{endTag}"
-      return newStacheString = value if tag == stacheString and value?
-      regex = new RegExp(tag, 'g')
-      newStacheString = newStacheString.replace regex, value
+  return newStache
 
-    return newStacheString
+stacheception = (stache, obj, options, limbo=[]) ->
+  limbo.push stache
+  _.forOwn stache, (value, key) ->
+    return if _.includes limbo, value
+    return stache[key] = stacheception value, obj, options, limbo if _.isObject value
+    stache[key] = stachest value, obj, options
 
-  return stachest stache if _.isString stache
+christacheio = (stache, obj, options) ->
+  return stachest stache, obj, options if _.isString stache
   return stache if ! _.isObject stache
-
-  limbo = []
-  stacheception = (stache) ->
-    limbo.push stache
-    _.forOwn stache, (value, key) ->
-      return if _.includes limbo, value
-      return stache[key] = stacheception value if _.isObject value
-      stache[key] = stachest value
-
-  return stacheception stache
+  return stacheception stache, obj, options
 
 module.exports = christacheio
