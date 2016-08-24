@@ -106,8 +106,8 @@ describe 'christacheio', ->
     beforeEach ->
       @result = christacheio '{{nut}}...?', nut: favorite: 'pecan'
 
-    it 'should replace the mustached area with [object Object]', ->
-      expect(@result).to.deep.equal '[object Object]...?'
+    it 'should replace the mustached area with the object', ->
+      expect(@result).to.deep.equal '{"favorite":"pecan"}...?'
 
   describe 'when called with a string containing an object key and a transformation', ->
     beforeEach ->

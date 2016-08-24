@@ -34,6 +34,7 @@ stachest = (stacheString, obj, options={}, depth=1) ->
       newStache = value
       return
     escapedKey = escape key
+    value = JSON.stringify(value) unless _.isString value
     regex = new RegExp(escapedKey, 'g')
     newStache = newStache.replace regex, value
     return
