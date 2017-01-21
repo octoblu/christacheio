@@ -132,10 +132,14 @@ describe 'christacheio', ->
 
   describe 'when called with a deep object to be christacheiod', ->
     beforeEach ->
-      @result = christacheio {outer:planet:'{{nut}}'}, {nut: 'macadamia'}
+      @template = {outer:planet:'{{nut}}'}
+      @result = christacheio @template, {nut: 'macadamia'}
 
     it 'should replace the deep mustached area', ->
       expect(@result).to.deep.equal {outer:planet:'macadamia'}
+
+    it 'should not fuck up the original object', ->
+      expect(@template).to.deep.equal {outer:planet:'{{nut}}'}
 
   describe 'when called with a circular object to be christacheiod', ->
     beforeEach ->

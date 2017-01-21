@@ -55,6 +55,7 @@ stacheception = (stache, obj, options, limbo=[]) ->
 
 christacheio = (stache, obj, options) ->
   return stachest stache, obj, options if ! _.isObject stache
+  stache = _.cloneDeep stache
   return stacheception stache, obj, options
 
 module.exports = christacheio
