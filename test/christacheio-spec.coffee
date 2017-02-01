@@ -47,6 +47,28 @@ describe 'christacheio', ->
     it 'should replace the mustached area', ->
       expect(@result).to.deep.equal 'pistachio'
 
+  describe 'when keys are templates', ->
+    beforeEach ->
+      sampleObject =
+        '{{nut}}': 'nut'
+        'nut': "{{nut}}"
+
+      @result = christacheio sampleObject, nut: 'pistachio'
+
+    it 'should replace the mustached key', ->
+      expect(@result).to.deep.equal pistachio: 'nut', nut: 'pistachio'
+
+  describe 'when keys are templates', ->
+    beforeEach ->
+      sampleObject =
+        'nut.{{nut}}': 'nut'
+        'nut': "nut.{{nut}}"
+
+      @result = christacheio sampleObject, nut: 'pistachio'
+
+    it 'should replace the mustached key', ->
+      expect(@result).to.deep.equal 'nut.pistachio': 'nut', nut: 'nut.pistachio'
+
   describe 'when called with two passes, like the engine', ->
     beforeEach ->
       sampleObject =
