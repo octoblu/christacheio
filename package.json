@@ -1,6 +1,6 @@
 {
   "name": "christacheio",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Christacheio, a mustache with {{pizzaz}}",
   "main": "index.js",
   "directories": {

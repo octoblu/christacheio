@@ -225,3 +225,21 @@ describe 'christacheio', ->
 
     it 'should recurse and replace elements of the mustached array', ->
       expect(@result).to.deep.equal large:tin:['ballet','spread']
+
+  describe 'when called with recursive christacheio, like a crazy person', ->
+    beforeEach ->
+      sampleObject =
+        blargh: '{{{{{{foo}}}}}}'
+
+      template = JSON.stringify sampleObject
+
+      obj =
+        foo: 'bar'
+        bar: 'nut'
+        nut: '{{pistachio}}'
+        pistachio: 'pistachio'
+
+      @result = christacheio template, obj, recurseDepth: 5
+
+    it 'should replace the mustached area', ->
+      expect(@result).to.deep.equal '{"blargh":"pistachio"}'

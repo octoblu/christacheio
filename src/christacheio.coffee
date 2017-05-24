@@ -56,7 +56,7 @@ stacheception = (stache, obj, options, limbo=[]) ->
     return
 
 christacheio = (stache, obj, options) ->
-  return stachest stache, obj, options if ! _.isObject stache
+  return stachest stache, obj, options unless _.isObject stache
   stache = _.cloneDeep stache
   return stacheception stache, obj, options
 
